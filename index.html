@@ -1,38 +1,15 @@
-<script>
-    // नए वेरिएबल्स (Security के लिए)
-    let lastBoostTime = 0;
-    let boostCount = 0;
-    const MAX_DAILY_BOOSTS = 3; // दिन में सिर्फ 3 बार बूस्ट
-
-    function applyBoost() {
-        let now = Date.now();
-        // अगर आखिरी बूस्ट को अभी 1 घंटा नहीं हुआ है
-        if (now - lastBoostTime < 3600000 && boostCount >= MAX_DAILY_BOOSTS) {
-            alert("मास्टर जी के साम्राज्य में इतनी जल्दी-जल्दी बूस्ट नहीं मिलता! 1 घंटे बाद आना। 👑");
-            return;
-        }
-
-        tapVal = tapVal * 2;
-        lastBoostTime = now;
-        boostCount++;
-        alert("2X Booster Active! (लिमिट: " + (MAX_DAILY_BOOSTS - boostCount) + " बाकी)");
-        
-        setTimeout(() => { 
-            tapVal = (currentUser === adminName) ? 1000 : 1; 
-        }, 15000);
-        saveAll();
+// सुफियान के पॉइंट्स को कंट्रोल करने के लिए स्क्रिप्ट
+function checkCheating(n, currentBalance) {
+    if (n !== adminName && currentBalance > 10000000) { // अगर 1 करोड़ से ऊपर गए
+        alert("धोखेबाज़ी पकड़ी गई! मास्टर जी के एम्पायर में टैक्स लग गया है।");
+        return 5000; // उसके पॉइंट्स को घटाकर 5000 कर देगा
     }
+    return currentBalance;
+}
 
-    function refillEnergy() {
-        let now = Date.now();
-        // एनर्जी रिफिल पर भी पाबंदी
-        if (now - lastBoostTime < 600000) { // 10 मिनट का गैप
-            alert("अभी-अभी तो टैंक फुल किया था! 10 मिनट रुको। ⚡");
-            return;
-        }
-        energy = 1000;
-        lastBoostTime = now;
-        updateUI();
-        saveAll();
-    }
-</script>
+// लॉगिन के समय पुराने पॉइंट्स चेक करना
+if (n === "sufiyan") {
+    // अगर सुफियान लॉगिन करे तो उसके पॉइंट्स को एक लिमिट में सेट कर दो
+    balance = Math.min(balance, 50000); 
+    alert("सुफियान, मास्टर जी ने तुम्हारी चालाकी पकड़ ली है! अब मेहनत से कमाओ। 👑");
+}
