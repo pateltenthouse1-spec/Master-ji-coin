@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>$MJC - Auto Login Empire</title>
+    <title>$MJC - Viral Empire</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; touch-action: manipulation; overflow: hidden; font-family: sans-serif; color: white; }
@@ -18,9 +18,9 @@
 <body class="flex flex-col h-screen">
 
     <div id="loginOverlay" class="fixed inset-0 bg-black z-[2000] flex flex-col items-center justify-center p-6 hidden">
-        <h1 class="text-4xl font-black text-yellow-500 mb-8 italic text-center uppercase tracking-tighter">Master Ji<br>Empire</h1>
-        <input type="text" id="nameInp" placeholder="अपना नाम लिखें..." class="bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl w-full max-w-xs outline-none mb-6 shadow-2xl">
-        <button onclick="login()" class="gold-bg text-black font-black py-4 w-full max-w-xs rounded-2xl text-xl uppercase shadow-lg active:scale-95 transition-all">Enter 👑</button>
+        <h1 class="text-4xl font-black text-yellow-500 mb-8 italic text-center uppercase tracking-tighter leading-none">Master Ji<br>Empire</h1>
+        <input type="text" id="nameInp" placeholder="अपना नाम लिखें..." class="bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl w-full max-w-xs outline-none mb-6">
+        <button onclick="login()" class="gold-bg text-black font-black py-4 w-full max-w-xs rounded-2xl text-xl uppercase shadow-lg">Enter Empire 👑</button>
     </div>
 
     <div id="gameUI" class="flex flex-col h-screen hidden">
@@ -39,7 +39,7 @@
         </div>
 
         <div class="flex flex-col items-center py-6">
-            <div class="flex items-center gap-3 bg-gray-900/50 px-6 py-2 rounded-full border border-yellow-600/20 mb-3 shadow-inner">
+            <div class="flex items-center gap-3 bg-gray-900/50 px-6 py-2 rounded-full border border-yellow-600/20 mb-3">
                 <span class="text-2xl">💰</span>
                 <span class="text-4xl font-black text-yellow-400 tracking-tight" id="bal">0</span>
             </div>
@@ -49,11 +49,16 @@
         </div>
 
         <div class="flex-grow overflow-y-auto px-4 pb-32">
-            <div id="exchange" class="tab-content active h-full flex flex-col items-center justify-center">
+            <div id="exchange" class="tab-content active h-full flex flex-col items-center justify-center pt-4">
                 <div id="tapBtn" class="w-72 h-72 rounded-full bg-gradient-to-b from-gray-800 to-black border-[10px] border-yellow-700/30 flex items-center justify-center text-[180px] shadow-[0_0_100px_rgba(255,215,0,0.1)] active:scale-90 transition-transform cursor-pointer">🪙</div>
-                <div class="flex gap-4 mt-10">
-                    <button onclick="applyBoost()" class="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-3 rounded-2xl text-[11px] font-black uppercase border border-blue-400 shadow-lg active:scale-95">🚀 Boost 2X</button>
-                    <button onclick="energy = 1000; updateUI(); saveAll();" class="bg-gradient-to-r from-orange-600 to-orange-800 px-6 py-3 rounded-2xl text-[11px] font-black uppercase border border-orange-400 shadow-lg active:scale-95">⚡ Full Tank</button>
+                
+                <button onclick="shareGame()" class="mt-6 bg-green-600 px-8 py-3 rounded-2xl text-xs font-black uppercase flex items-center gap-2 border border-green-400 shadow-lg active:scale-95 transition-all">
+                    📲 Share & Earn 50k 💰
+                </button>
+
+                <div class="flex gap-4 mt-6">
+                    <button onclick="applyBoost()" class="bg-blue-600 px-6 py-3 rounded-2xl text-[11px] font-black uppercase border border-blue-400 shadow-md">🚀 Boost</button>
+                    <button onclick="energy = 1000; updateUI(); saveAll();" class="bg-orange-600 px-6 py-3 rounded-2xl text-[11px] font-black uppercase border border-orange-400 shadow-md">⚡ Tank</button>
                 </div>
             </div>
 
@@ -62,115 +67,4 @@
                 <div class="glass p-4 rounded-xl flex justify-between items-center border-l-4 border-yellow-500 bg-yellow-500/5">
                     <span class="text-xl">🥇</span>
                     <span class="font-bold flex-grow ml-4 text-yellow-400" id="rank1Name">Asif Khan Multani</span>
-                    <span class="font-black" id="rank1Score">100M+</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="fixed bottom-24 left-8 font-black flex items-center gap-2">
-            <span class="text-2xl">⚡</span>
-            <span id="en" class="text-xl">1000</span> <span class="text-gray-500 text-xs">/ 1000</span>
-        </div>
-
-        <div class="fixed bottom-6 left-6 right-6 h-16 glass rounded-2xl flex items-center justify-around z-50 border border-yellow-600/30 shadow-2xl">
-            <div onclick="showTab('exchange')" class="flex flex-col items-center opacity-100" id="t1"><span class="text-2xl">🏠</span><span class="text-[10px] font-bold uppercase">Home</span></div>
-            <div onclick="showTab('leaderboard')" class="flex flex-col items-center opacity-50" id="t2"><span class="text-2xl">🏆</span><span class="text-[10px] font-bold uppercase">Rank</span></div>
-        </div>
-    </div>
-
-    <script>
-        let balance = 0; let energy = 1000; let tapVal = 1; let pph = 0;
-        let currentUser = "";
-        const adminName = "asif khan multani";
-
-        window.onload = function() {
-            const savedUser = localStorage.getItem('mjc_active_user');
-            if (savedUser) {
-                // अगर नाम पहले से सेव है, तो सीधा लॉगिन करो
-                document.getElementById('nameInp').value = savedUser;
-                login();
-            } else {
-                // वरना लॉगिन स्क्रीन दिखाओ
-                document.getElementById('loginOverlay').classList.remove('hidden');
-            }
-        };
-
-        function login() {
-            let n = document.getElementById('nameInp').value.trim().toLowerCase();
-            if (!n) return;
-            
-            currentUser = n;
-            localStorage.setItem('mjc_active_user', n); // नाम को हमेशा के लिए सेव करना
-            
-            document.getElementById('loginOverlay').classList.add('hidden');
-            document.getElementById('gameUI').classList.remove('hidden');
-            document.getElementById('uName').innerText = n.toUpperCase();
-            document.getElementById('avatar').innerText = n[0].toUpperCase();
-
-            if (n === adminName) {
-                balance = 100069754; tapVal = 1000; pph = 50000;
-            } else {
-                let saved = localStorage.getItem('mjc_data_v4_' + n);
-                if (saved) {
-                    let d = JSON.parse(saved);
-                    balance = d.balance || 0;
-                    energy = d.energy || 1000;
-                    pph = d.pph || 0;
-                }
-            }
-            updateUI();
-        }
-
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.getElementById('t1').style.opacity = id === 'exchange' ? '1' : '0.5';
-            document.getElementById('t2').style.opacity = id === 'leaderboard' ? '1' : '0.5';
-        }
-
-        function applyBoost() {
-            let cur = tapVal; tapVal = tapVal * 2;
-            alert("2X Booster Active! 🚀");
-            setTimeout(() => { tapVal = cur; }, 15000);
-        }
-
-        function updateUI() {
-            document.getElementById('bal').innerText = balance.toLocaleString();
-            document.getElementById('en').innerText = energy;
-            document.getElementById('pphDisplay').innerText = "+" + pph.toLocaleString() + " 💰";
-            document.getElementById('lvlBar').style.width = (balance % 10000 / 100) + "%";
-            let r = balance >= 1000000 ? "MJC Emperor 👑" : "Bronze Miner";
-            document.getElementById('rankDisplay').innerText = r;
-            if (currentUser === adminName) {
-                document.getElementById('rank1Score').innerText = balance.toLocaleString();
-            }
-        }
-
-        function saveAll() {
-            if (currentUser && currentUser !== adminName) {
-                localStorage.setItem('mjc_data_v4_' + currentUser, JSON.stringify({balance, energy, pph}));
-            }
-        }
-
-        document.getElementById('tapBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            let cost = tapVal > 100 ? 1 : tapVal;
-            if (energy >= cost) {
-                balance += tapVal; energy -= cost;
-                let t = e.touches[0];
-                let f = document.createElement('div');
-                f.className = 'floating-text'; f.innerText = "+" + tapVal;
-                f.style.left = t.pageX + 'px'; f.style.top = (t.pageY - 50) + 'px';
-                document.body.appendChild(f); setTimeout(() => f.remove(), 700);
-                updateUI(); saveAll();
-            }
-        });
-
-        setInterval(() => {
-            balance += Math.floor(pph / 3600);
-            if (energy < 1000) energy += 3;
-            updateUI(); saveAll();
-        }, 1000);
-    </script>
-</body>
-</html>
+                    <span class="font-black" id="rank
