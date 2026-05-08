@@ -3,38 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>$MJC - Season 2 Ultimate</title>
+    <title>$MJC Season 2 - Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; touch-action: manipulation; overflow: hidden; font-family: sans-serif; color: white; }
+        body { background: #000; touch-action: manipulation; overflow: hidden; font-family: sans-serif; color: white; margin: 0; }
         .gold-bg { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
-        .tab-content { display: none; }
-        .tab-content.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .tab-content { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; }
+        .tab-content.active { display: flex; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
-        .floating-text { position: absolute; font-weight: bold; font-size: 32px; color: #ffd700; pointer-events: none; animation: floatUp 0.7s forwards; z-index: 100; }
+        .floating-text { position: absolute; font-weight: bold; font-size: 32px; color: #ffd700; pointer-events: none; animation: floatUp 0.8s forwards; z-index: 100; text-shadow: 0 0 10px rgba(255,215,0,0.8); }
     </style>
 </head>
 <body class="flex flex-col h-screen">
 
-    <div id="loginOverlay" class="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-6 hidden">
+    <div id="loginOverlay" class="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-6">
         <h1 class="text-4xl font-black text-yellow-500 mb-8 italic text-center uppercase tracking-tighter">Master Ji<br>Empire</h1>
-        <input type="text" id="nameInp" placeholder="अपना नाम लिखें..." class="bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl w-full max-w-xs outline-none mb-6 shadow-2xl">
-        <button onclick="login()" class="gold-bg text-black font-black py-4 w-full max-w-xs rounded-2xl text-xl uppercase shadow-lg">Enter Season 2 👑</button>
+        <input type="text" id="nameInp" placeholder="अपना नाम लिखें..." class="bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl w-full max-w-xs outline-none mb-6">
+        <button onclick="login()" class="gold-bg text-black font-black py-4 w-full max-w-xs rounded-2xl text-xl uppercase shadow-lg active:scale-95 transition-all">Enter Empire 👑</button>
     </div>
 
-    <div id="gameUI" class="flex flex-col h-full hidden">
+    <div id="gameUI" class="flex flex-col h-full w-full" style="display: none;">
         <div class="p-4 flex justify-between items-center glass">
             <div class="flex items-center gap-2">
                 <div class="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center font-bold text-black border-2 border-yellow-400" id="avatar">?</div>
                 <div>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase" id="uName">User</p>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase" id="uName">Loading...</p>
                     <p class="text-[10px] text-yellow-500 font-black italic" id="rankDisplay">Season 2 Miner</p>
                 </div>
             </div>
             <div class="text-right">
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-tighter">Profit/Hr</p>
-                <p class="text-xs font-bold text-green-400" id="pphDisplay">+100,000 💰</p>
+                <p class="text-xs font-bold text-green-400" id="pphDisplay">+1,000 💰</p>
             </div>
         </div>
 
@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <div class="flex-grow overflow-hidden relative">
+        <div class="flex-grow overflow-hidden relative flex flex-col items-center">
             <div id="exchange" class="tab-content active pt-4">
                 <div id="tapBtn" class="w-72 h-72 rounded-full bg-gradient-to-b from-gray-800 to-black border-[10px] border-yellow-700/30 flex items-center justify-center text-[160px] shadow-2xl active:scale-90 transition-transform cursor-pointer">🪙</div>
                 
@@ -62,96 +62,22 @@
 
             <div id="leaderboard" class="tab-content pt-10 px-6">
                 <h2 class="text-2xl font-black text-yellow-500 italic uppercase mb-8 text-center">Top Emperors 🏆</h2>
-                <div class="w-full glass p-4 rounded-xl flex justify-between items-center border-l-4 border-yellow-500">
+                <div class="w-full glass p-4 rounded-xl flex justify-between items-center border-l-4 border-yellow-500 mb-3">
                     <span class="text-xl">🥇</span>
                     <span class="font-bold flex-grow ml-4 text-yellow-400" id="rank1Name">Asif Khan Multani</span>
                     <span class="font-black" id="rank1Score">100M+</span>
                 </div>
-                <div class="w-full glass p-4 rounded-xl flex justify-between items-center border-l-4 border-gray-500 mt-3">
-                    <span class="text-xl text-gray-400">🥈</span>
+                <div class="w-full glass p-4 rounded-xl flex justify-between items-center border-l-4 border-gray-500">
+                    <span class="text-xl">🥈</span>
                     <span class="font-bold flex-grow ml-4">Aman Khan</span>
                     <span class="font-bold">25.4M</span>
                 </div>
             </div>
         </div>
 
-        <div class="fixed bottom-24 left-8 font-black flex items-center gap-2">
+        <div class="p-6 flex items-center gap-2 mb-20">
             <span class="text-2xl">⚡</span>
-            <span id="en" class="text-xl">1000</span> <span class="text-gray-500 text-xs">/ 1000</span>
+            <span id="en" class="text-xl font-black">1000</span> <span class="text-gray-500 text-xs">/ 1000</span>
         </div>
 
-        <div class="fixed bottom-6 left-6 right-6 h-16 glass rounded-2xl flex items-center justify-around z-50 border border-yellow-600/30 shadow-2xl">
-            <div onclick="showTab('exchange')" class="flex flex-col items-center" id="t1"><span class="text-2xl">🏠</span><span class="text-[10px] font-bold">HOME</span></div>
-            <div onclick="showTab('leaderboard')" class="flex flex-col items-center opacity-50" id="t2"><span class="text-2xl">🏆</span><span class="text-[10px] font-bold">RANK</span></div>
-        </div>
-    </div>
-
-    <script>
-        let balance = 0; let energy = 1000; let tapVal = 1; let pph = 0;
-        let currentUser = ""; let lastBoost = 0;
-        const adminName = "asif khan multani";
-
-        window.onload = function() {
-            const savedUser = localStorage.getItem('mjc_s2_active_user');
-            if (savedUser) { document.getElementById('nameInp').value = savedUser; login(); }
-            else { document.getElementById('loginOverlay').classList.remove('hidden'); }
-        };
-
-        function login() {
-            let n = document.getElementById('nameInp').value.trim().toLowerCase();
-            if (!n) return;
-            currentUser = n;
-            localStorage.setItem('mjc_s2_active_user', n);
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('gameUI').classList.remove('hidden');
-            document.getElementById('uName').innerText = n.toUpperCase();
-            document.getElementById('avatar').innerText = n[0].toUpperCase();
-
-            if (n === adminName) { balance = 100113000; tapVal = 1000; pph = 100000; }
-            else {
-                if(n === "sufiyan") { balance = 0; pph = 1000; }
-                else {
-                    let saved = localStorage.getItem('mjc_data_s2_' + n);
-                    if (saved) { let d = JSON.parse(saved); balance = d.balance || 0; pph = d.pph || 1000; }
-                }
-            }
-            updateUI();
-        }
-
-        function showTab(id) {
-            document.getElementById('exchange').classList.remove('active');
-            document.getElementById('leaderboard').classList.remove('active');
-            document.getElementById(id).classList.add('active');
-            document.getElementById('t1').style.opacity = id === 'exchange' ? '1' : '0.5';
-            document.getElementById('t2').style.opacity = id === 'leaderboard' ? '1' : '0.5';
-        }
-
-        async function shareGame() {
-            const text = `मैं $MJC में राजा बन गया हूँ! 👑 क्या तुम मुझे हरा सकते हो?`;
-            if (navigator.share) {
-                await navigator.share({ title: '$MJC Empire', text: text, url: window.location.href });
-                balance += 50000; updateUI(); saveAll();
-            } else { alert("Link Copied! +50k Bonus"); balance += 50000; updateUI(); saveAll(); }
-        }
-
-        function useBoost(type) {
-            let now = Date.now();
-            if (currentUser !== adminName && now - lastBoost < 3600000) {
-                alert("मास्टर जी ने रोक लगाई है! 1 घंटा इंतज़ार करें। 👑"); return;
-            }
-            if (type === '2x') { tapVal *= 2; setTimeout(() => tapVal = (currentUser === adminName ? 1000 : 1), 15000); }
-            else { energy = 1000; }
-            if (currentUser !== adminName) lastBoost = now;
-            updateUI();
-        }
-
-        function updateUI() {
-            document.getElementById('bal').innerText = balance.toLocaleString();
-            document.getElementById('en').innerText = energy;
-            document.getElementById('pphDisplay').innerText = "+" + pph.toLocaleString() + " 💰";
-            document.getElementById('lvlBar').style.width = (balance % 10000 / 100) + "%";
-            if (currentUser === adminName) document.getElementById('rank1Score').innerText = balance.toLocaleString();
-        }
-
-        function saveAll() {
-            if (
+        <div class="fixed bottom-6 left-6 right-6 h-16 glass rounded-2xl flex items-center justify-around z-5
