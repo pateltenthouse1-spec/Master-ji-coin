@@ -6,83 +6,75 @@
     <title>$MJC - Master Ji Empire</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: radial-gradient(circle, #1a1a1a 0%, #000 100%); touch-action: manipulation; overflow: hidden; font-family: sans-serif; }
-        #loginOverlay { position: fixed; inset: 0; background: #000; z-index: 100; display: flex; flex-direction: column; items-center; justify-content: center; padding: 20px; }
-        .gold-glow { box-shadow: 0 0 80px rgba(255, 215, 0, 0.2); }
-        .coin-tap:active { transform: scale(0.85); }
-        .floating-text { position: absolute; color: #ffd700; font-weight: bold; font-size: 32px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; text-shadow: 0 0 10px rgba(255,215,0,0.8); }
+        body { background: #000; touch-action: manipulation; overflow: hidden; font-family: sans-serif; }
+        #loginOverlay { position: fixed; inset: 0; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); z-index: 9999; display: flex; flex-direction: column; items-center; justify-content: center; padding: 20px; }
+        .gold-btn { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); }
+        .floating-text { position: absolute; color: #ffd700; font-weight: bold; font-size: 32px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
     </style>
 </head>
 <body class="flex flex-col items-center justify-between h-screen pb-6 text-white select-none">
 
     <div id="loginOverlay">
-        <h2 class="text-3xl font-black text-yellow-500 mb-8 italic tracking-widest text-center uppercase">Master Ji Empire</h2>
-        <div class="w-full max-w-xs space-y-6">
+        <h2 class="text-4xl font-black text-yellow-500 mb-10 italic tracking-widest text-center uppercase">Master Ji Empire</h2>
+        <div class="w-full max-w-xs space-y-6 relative z-[10000]">
             <input type="text" id="userNameInput" placeholder="लिखिए अपना नाम..." 
-                   class="w-full bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl outline-none shadow-2xl">
+                   class="w-full bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-5 text-center text-yellow-400 text-2xl outline-none shadow-2xl mb-4">
             
-            <button onclick="startGame()" 
-                    class="w-full bg-gradient-to-r from-yellow-500 to-yellow-700 py-4 rounded-2xl font-black text-black text-xl uppercase tracking-widest shadow-[0_0_20px_rgba(202,138,4,0.5)] active:scale-95 transition-all">
+            <div id="loginBtn" onclick="startGame()" ontouchstart="startGame()"
+                    class="gold-btn w-full py-5 rounded-2xl font-black text-black text-2xl uppercase tracking-widest text-center cursor-pointer active:scale-95 transition-all">
                 ENTER EMPIRE 👑
-            </button>
+            </div>
         </div>
-        <p class="mt-10 text-gray-500 text-xs tracking-tighter italic">Enter 'Asif Khan Multani' for Admin Access</p>
+        <p class="mt-12 text-gray-600 text-[10px] tracking-widest italic uppercase">Master Ji Official System 👑</p>
     </div>
 
-    <div id="gameUI" class="hidden w-full h-full flex flex-col items-center justify-between">
-        <div class="w-full p-4 text-center">
-            <h1 class="text-2xl font-black tracking-widest text-yellow-500 uppercase italic drop-shadow-lg">Master Ji Empire</h1>
+    <div id="gameUI" class="hidden w-full h-full flex flex-col items-center justify-between p-4">
+        <div class="w-full text-center">
+            <h1 class="text-2xl font-black text-yellow-500 uppercase italic">Master Ji Empire</h1>
             <div class="mt-4 px-10">
-                <div class="flex justify-between text-[10px] font-bold text-gray-400 mb-1 uppercase">
+                <div class="flex justify-between text-[10px] font-bold text-gray-400 mb-1">
                     <span id="levelText">Level 1/5</span>
                     <span id="nextRank">Next: Silver</span>
                 </div>
-                <div class="w-full bg-gray-900 h-1.5 rounded-full border border-gray-800">
+                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800">
                     <div id="levelBar" class="bg-blue-500 h-full w-0 transition-all duration-500"></div>
                 </div>
             </div>
-            <div class="flex items-center justify-center mt-4 bg-yellow-900/20 py-2 rounded-full border border-yellow-600/30 mx-8 shadow-lg">
-                <span class="text-2xl mr-2">💰</span>
-                <span id="balance" class="text-3xl font-black text-yellow-400">0</span>
+            <div class="flex items-center justify-center mt-6 bg-yellow-900/20 py-3 rounded-full border border-yellow-600/30 mx-6">
+                <span class="text-3xl mr-2">💰</span>
+                <span id="balance" class="text-4xl font-black text-yellow-400">0</span>
             </div>
-            <p class="text-gray-400 mt-2 text-[10px] font-bold uppercase"><span id="uNameDisplay">User</span> | <span id="rankName" class="text-yellow-200">Miner</span></p>
+            <p class="text-gray-400 mt-2 text-[10px] font-bold tracking-widest uppercase"><span id="uNameDisplay">User</span> | <span id="rankName">Miner</span></p>
         </div>
 
-        <div id="coinBtn" class="w-64 h-64 flex items-center justify-center cursor-pointer transition-transform duration-75 coin-tap gold-glow rounded-full border-8 border-yellow-700/20 bg-black/40 text-[150px]">🪙</div>
+        <div id="coinBtn" class="w-72 h-72 flex items-center justify-center cursor-pointer transition-transform duration-75 active:scale-90 rounded-full bg-black/40 text-[160px] border-8 border-yellow-700/20 shadow-[0_0_80px_rgba(255,215,0,0.1)]">🪙</div>
 
-        <div class="w-full px-8 pb-4">
-            <div class="flex justify-between items-end mb-4 font-black">
-                <div class="text-left">
-                    <p class="text-yellow-500 text-[10px] mb-1 uppercase">⚡ Energy</p>
-                    <p class="text-2xl"><span id="energy">1000</span><span class="text-gray-500 text-sm">/1000</span></p>
-                </div>
-                <span class="text-yellow-400 italic text-xs">OFFICIAL MJC 👑</span>
-            </div>
-            <div class="w-full bg-black h-4 rounded-full overflow-hidden border border-yellow-900/50 shadow-inner">
+        <div class="w-full px-8">
+            <p class="text-yellow-500 text-[10px] font-black uppercase mb-1">⚡ Energy</p>
+            <div class="w-full bg-black h-4 rounded-full border border-yellow-900/50">
                 <div id="energyBar" class="bg-gradient-to-r from-yellow-700 to-yellow-400 h-full w-full"></div>
             </div>
+            <p class="text-center mt-2 font-bold text-xl"><span id="energy">1000</span> / 1000</p>
         </div>
     </div>
 
     <script>
         let balance = 0; let energy = 1000; let tapValue = 1; const maxEnergy = 1000;
-        const adminName = "asif khan multani"; 
+        const adminNames = ["asif khan multani", "aasif khan multani"]; // दोनों स्पेलिंग काम करेंगी
 
         function startGame() {
             let nameInput = document.getElementById('userNameInput').value.trim().toLowerCase();
-            if (!nameInput) { alert("मास्टर जी, पहले नाम तो लिखिए!"); return; }
+            if (!nameInput) return;
 
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('gameUI').classList.remove('hidden');
             document.getElementById('uNameDisplay').innerText = nameInput.toUpperCase();
 
-            if (nameInput === adminName) {
+            if (adminNames.includes(nameInput)) {
                 balance = 100000000; tapValue = 1000;
-                alert("प्रणाम सम्राट आसिफ! आपका साम्राज्य तैयार है। 👑");
             } else {
                 balance = parseInt(localStorage.getItem('mjc_bal_' + nameInput)) || 0;
-                tapValue = 1;
             }
             updateUI();
         }
@@ -110,21 +102,22 @@
             e.preventDefault();
             if (energy >= 1) {
                 balance += tapValue; energy -= 1;
-                showFloatingText(e.touches[0].pageX, e.touches[0].pageY, `+${tapValue}`);
+                const t = e.touches[0];
+                const f = document.createElement('div');
+                f.innerText = `+${tapValue}`; f.className = 'floating-text';
+                f.style.left = t.pageX + 'px'; f.style.top = t.pageY + 'px';
+                document.body.appendChild(f); setTimeout(() => f.remove(), 800);
                 updateUI(); saveData();
             }
         });
 
-        function showFloatingText(x, y, val) {
-            const text = document.createElement('div');
-            text.innerText = val; text.className = 'floating-text';
-            text.style.left = x + 'px'; text.style.top = y + 'px';
-            document.body.appendChild(text); setTimeout(() => text.remove(), 800);
-        }
-
         function saveData() {
             let name = document.getElementById('uNameDisplay').innerText.toLowerCase();
-            if (name !== adminName) { localStorage.setItem('mjc_bal_' + name, balance); }
+            if (!adminNames.includes(name)) { localStorage.setItem('mjc_bal_' + name, balance); }
         }
 
-        setInterval(() => { if (energy < maxEnergy) { energy += 2; updateUI(); } }, 1500);
+        setInterval(() => { if (energy < maxEnergy) { energy += 5; updateUI(); } }, 1000);
+        updateUI();
+    </script>
+</body>
+</html>
