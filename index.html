@@ -3,137 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>$MJC Season 2 - Master Edition</title>
+    <title>MJC SEASON 2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; touch-action: manipulation; overflow: hidden; font-family: sans-serif; color: white; margin: 0; padding: 0; }
-        .gold-bg { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
-        .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .tab-content.active { display: flex; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
-        .floating-text { position: absolute; font-weight: bold; font-size: 32px; color: #ffd700; pointer-events: none; animation: floatUp 0.8s forwards; z-index: 100; text-shadow: 0 0 10px rgba(255,215,0,0.8); }
+        body { background: #000; color: white; font-family: sans-serif; margin: 0; overflow: hidden; touch-action: manipulation; }
+        .gold-btn { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); color: black; font-weight: 900; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 215, 0, 0.2); }
+        .tab-content { display: none; }
+        .tab-content.active { display: flex; flex-direction: column; align-items: center; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
+        .floating-text { position: absolute; font-weight: bold; font-size: 30px; color: #ffd700; pointer-events: none; animation: floatUp 0.7s forwards; }
     </style>
 </head>
-<body class="flex flex-col h-screen">
+<body>
 
-    <div id="loginOverlay" class="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-6" style="display: flex;">
-        <h1 class="text-4xl font-black text-yellow-500 mb-8 italic text-center uppercase tracking-tighter">MASTER JI<br>EMPIRE</h1>
-        <input type="text" id="nameInp" placeholder="अपना नाम लिखें..." class="bg-[#111827] border-2 border-yellow-600 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl w-full max-w-xs outline-none mb-6">
-        <button id="enterBtn" onclick="login()" class="gold-bg text-black font-black py-4 w-full max-w-xs rounded-2xl text-xl uppercase shadow-lg active:scale-95 transition-all">ENTER EMPIRE 👑</button>
+    <div id="loginScreen" class="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-6">
+        <h1 class="text-4xl font-black text-yellow-500 mb-2 italic">MASTER JI</h1>
+        <p class="text-xs tracking-widest mb-10 text-gray-500 font-bold uppercase">Empire Season 2</p>
+        <input type="text" id="nameInp" placeholder="अपना नाम लिखें..." class="bg-gray-900 border-2 border-yellow-700 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl w-full max-w-xs outline-none mb-6">
+        <button onclick="doLogin()" class="gold-btn py-4 w-full max-w-xs rounded-2xl text-xl uppercase shadow-2xl active:scale-95 transition-all">START PLAYING 👑</button>
     </div>
 
-    <div id="gameUI" class="flex flex-col h-full w-full" style="display: none;">
+    <div id="mainUI" class="hidden h-screen flex flex-col">
         <div class="p-4 flex justify-between items-center glass">
             <div class="flex items-center gap-2">
-                <div class="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center font-bold text-black border-2 border-yellow-400" id="avatar">A</div>
+                <div class="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center font-bold text-black border-2 border-yellow-400" id="avatar">?</div>
                 <div>
                     <p class="text-[10px] text-gray-400 font-bold uppercase" id="uName">Loading...</p>
-                    <p class="text-[10px] text-yellow-500 font-black italic" id="rankDisplay">Season 2 Miner</p>
+                    <p class="text-[10px] text-yellow-500 font-black italic">MJC Emperor</p>
                 </div>
             </div>
             <div class="text-right">
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-tighter">Profit/Hr</p>
-                <p class="text-xs font-bold text-green-400" id="pphDisplay">+100,000 💰</p>
+                <p class="text-xs font-bold text-green-400">+100,000 💰</p>
             </div>
         </div>
 
         <div class="flex flex-col items-center py-6">
-            <div class="flex items-center gap-3 bg-gray-900/50 px-6 py-2 rounded-full border border-yellow-600/20 mb-3">
+            <div class="flex items-center gap-3 bg-gray-900/50 px-6 py-2 rounded-full border border-yellow-600/20 mb-3 shadow-inner">
                 <span class="text-2xl">💰</span>
                 <span class="text-4xl font-black text-yellow-400 tracking-tight" id="bal">0</span>
             </div>
-            <div class="w-64 h-2 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
-                <div class="bg-blue-600 h-full transition-all duration-500" id="lvlBar" style="width: 0%"></div>
+            <div class="w-64 h-1.5 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+                <div class="bg-blue-500 h-full transition-all duration-500" id="lvlBar" style="width: 0%"></div>
             </div>
         </div>
 
-        <div class="flex-grow overflow-y-auto relative flex flex-col items-center pt-4">
-            <div id="exchange" class="tab-content active">
+        <div class="flex-grow relative">
+            <div id="exchange" class="tab-content active h-full justify-center">
                 <div id="tapBtn" class="w-72 h-72 rounded-full bg-gradient-to-b from-gray-800 to-black border-[10px] border-yellow-700/30 flex items-center justify-center text-[160px] shadow-2xl active:scale-90 transition-transform cursor-pointer">🪙</div>
                 
-                <button onclick="shareGame()" class="mt-8 bg-green-600 px-8 py-3 rounded-2xl text-xs font-black uppercase flex items-center gap-2 border border-green-400 shadow-lg active:scale-95">📲 Share & Earn 50k 💰</button>
+                <button onclick="doShare()" class="mt-8 bg-green-700 px-8 py-3 rounded-2xl text-xs font-black uppercase flex items-center gap-2 border border-green-500 shadow-lg active:scale-95">📲 Share & Earn 50k</button>
 
                 <div class="flex gap-4 mt-6">
-                    <button onclick="useBoost('2x')" class="bg-blue-600 px-6 py-3 rounded-2xl text-[11px] font-black uppercase border border-blue-400 shadow-lg active:scale-95">🚀 Boost 2X</button>
-                    <button onclick="useBoost('tank')" class="bg-orange-600 px-6 py-3 rounded-2xl text-[11px] font-black uppercase border border-orange-400 shadow-lg active:scale-95">⚡ Tank</button>
+                    <button onclick="doBoost('2x')" class="bg-blue-700 px-6 py-3 rounded-2xl text-[11px] font-black uppercase border border-blue-500 active:scale-95">🚀 Boost 2X</button>
+                    <button onclick="doBoost('tank')" class="bg-orange-700 px-6 py-3 rounded-2xl text-[11px] font-black uppercase border border-orange-500 active:scale-95">⚡ Tank</button>
                 </div>
             </div>
 
-            <div id="leaderboard" class="tab-content px-6 w-full">
-                <h2 class="text-2xl font-black text-yellow-500 italic uppercase mb-8 text-center">Top Emperors 🏆</h2>
-                <div class="w-full glass p-4 rounded-xl flex justify-between items-center border-l-4 border-yellow-500 mb-4">
+            <div id="leaderboard" class="tab-content pt-10 px-6 w-full">
+                <h2 class="text-2xl font-black text-yellow-500 italic uppercase mb-8 text-center tracking-widest">Rankings 🏆</h2>
+                <div class="w-full glass p-4 rounded-xl flex justify-between items-center border-l-4 border-yellow-500">
                     <span class="text-xl">🥇</span>
-                    <span class="font-bold flex-grow ml-4 text-yellow-400" id="rank1Name">Asif Khan Multani</span>
-                    <span class="font-black" id="rank1Score">100M+</span>
+                    <span class="font-bold flex-grow ml-4 text-yellow-400">Asif Khan Multani</span>
+                    <span class="font-black" id="adminScore">100M+</span>
                 </div>
-                <div class="w-full glass p-4 rounded-xl flex justify-between items-center border-l-4 border-gray-500">
+                <div class="w-full glass p-4 rounded-xl flex justify-between items-center border-l-4 border-gray-500 mt-3">
                     <span class="text-xl">🥈</span>
                     <span class="font-bold flex-grow ml-4">Aman Khan</span>
-                    <span class="font-bold">25.4M</span>
+                    <span class="font-bold text-gray-400">25.4M</span>
                 </div>
             </div>
         </div>
 
-        <div class="p-6 flex items-center gap-2 mb-20">
+        <div class="p-4 flex items-center gap-2 mb-24 px-8 font-black">
             <span class="text-2xl">⚡</span>
-            <span id="en" class="text-xl font-black">1000</span> <span class="text-gray-500 text-xs">/ 1000</span>
+            <span id="en" class="text-xl">1000</span> <span class="text-gray-500 text-xs">/ 1000</span>
         </div>
 
-        <div class="fixed bottom-6 left-6 right-6 h-16 glass rounded-2xl flex items-center justify-around z-50 border border-yellow-600/30 shadow-2xl">
-            <div onclick="showTab('exchange')" class="flex flex-col items-center" id="t1" style="opacity: 1;"><span class="text-2xl">🏠</span><span class="text-[10px] font-bold">HOME</span></div>
-            <div onclick="showTab('leaderboard')" class="flex flex-col items-center" id="t2" style="opacity: 0.5;"><span class="text-2xl">🏆</span><span class="text-[10px] font-bold">RANK</span></div>
-        </div>
+        <nav class="fixed bottom-6 left-6 right-6 h-16 glass rounded-2xl flex items-center justify-around z-50 border border-yellow-600/30">
+            <div onclick="showTab('exchange')" class="flex flex-col items-center" id="t1"><span class="text-2xl">🏠</span><span class="text-[10px] font-bold">HOME</span></div>
+            <div onclick="showTab('leaderboard')" class="flex flex-col items-center opacity-50" id="t2"><span class="text-2xl">🏆</span><span class="text-[10px] font-bold">RANK</span></div>
+        </nav>
     </div>
 
     <script>
-        let balance = 0; let energy = 1000; let tapVal = 1; let pph = 1000;
-        let currentUser = ""; let lastBoost = 0;
+        let balance = 0, energy = 1000, tapVal = 1, lastBoost = 0, currentUser = "";
         const adminName = "asif khan multani";
 
         window.onload = function() {
-            const savedUser = localStorage.getItem('mjc_final_fixed');
-            if (savedUser) {
-                document.getElementById('nameInp').value = savedUser;
-                login();
-            }
+            const saved = localStorage.getItem('mjc_s2_user');
+            if (saved) { document.getElementById('nameInp').value = saved; doLogin(); }
         };
 
-        function login() {
+        function doLogin() {
             let n = document.getElementById('nameInp').value.trim().toLowerCase();
             if (!n) return;
             currentUser = n;
-            localStorage.setItem('mjc_final_fixed', n);
-            
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('gameUI').style.display = 'flex';
+            localStorage.setItem('mjc_s2_user', n);
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainUI').style.display = 'flex';
             document.getElementById('uName').innerText = n.toUpperCase();
             document.getElementById('avatar').innerText = n[0].toUpperCase();
 
-            if (n === adminName) {
-                balance = 100113000; tapVal = 1000; pph = 100000;
-            } else {
-                if(n === "sufiyan") { balance = 0; pph = 500; }
-                else {
-                    let saved = localStorage.getItem('mjc_s2_data_' + n);
-                    if (saved) {
-                        let d = JSON.parse(saved);
-                        balance = d.balance || 0;
-                        pph = d.pph || 1000;
-                    }
-                }
+            if (n === adminName) { balance = 100113000; tapVal = 1000; }
+            else {
+                let d = localStorage.getItem('mjc_s2_data_' + n);
+                if (d) { balance = JSON.parse(d).balance || 0; }
+                if (n === "sufiyan") { balance = 0; }
             }
-            updateUI();
+            update();
         }
 
         function showTab(id) {
             document.getElementById('exchange').style.display = (id === 'exchange' ? 'flex' : 'none');
             document.getElementById('leaderboard').style.display = (id === 'leaderboard' ? 'flex' : 'none');
-            document.getElementById('t1').style.opacity = id === 'exchange' ? '1' : '0.5';
-            document.getElementById('t2').style.opacity = id === 'leaderboard' ? '1' : '0.5';
+            document.getElementById('t1').style.opacity = (id === 'exchange' ? '1' : '0.5');
+            document.getElementById('t2').style.opacity = (id === 'leaderboard' ? '1' : '0.5');
         }
 
-        function useBoost(type) {
+        function doBoost(type) {
             let now = Date.now();
-            if (currentUser !== adminName && (now - lastBoost < 3600000)) {
-                alert("मास्टर जी का नियम: 1 घंटा इंत
+            if (currentUser !== adminName && (now - lastBoost < 3600000)) { alert("1 घंटा इंतज़ार करें! 👑"); return; }
+            if (type === '2x') { tapVal *= 2; setTimeout(() => tapVal = (currentUser === adminName ? 1000 : 1), 15000); }
+            else { energy = 1000; }
+            if (currentUser !== adminName) lastBoost = now;
+            update();
+        }
+
+        function doShare() {
+            alert("Link Copied! +50,000 Bonus 💰");
+            balance += 50000; update(); save();
+        }
+
+        function update() {
+            document.getElementById('bal').innerText = balance.toLocaleString();
+            document.getElementById('en').innerText = Math.floor(energy);
+            document.getElementById('lvlBar').style.width = (balance % 10000 / 100) + "%";
+            if(currentUser === adminName) document.getElementById('adminScore').innerText = balance.toLocaleString();
+        }
+
+        function save() {
+            if (currentUser && currentUser !== adminName) {
+                localStorage.setItem('mjc_s2_data_' + currentUser, JSON.stringify({balance}));
+            }
+        }
+
+        document.getElementById('tapBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            let cost = tapVal > 100 ? 1 : tapVal;
+            if (energy >= cost) {
+                balance += tapVal; energy -= cost;
+                let t = e.touches[0];
+                let f = document.createElement('div');
+                f.className = 'floating-text'; f.innerText = "+" + tapVal;
+                f.style.left = t.pageX + 'px'; f.style.top = (t.pageY - 50) + 'px';
+                document.body.appendChild(f); setTimeout(() => f.remove(), 700);
+                update(); save();
+            }
+        });
+
+        setInterval(() => { if (energy < 1000) energy = Math.min(1000, energy + 3); update(); }, 1000);
+    </script>
+</body>
+</html>
