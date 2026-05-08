@@ -3,84 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>$MJC - Master Ji Empire</title>
+    <title>$MJC - Leaderboard Update</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; touch-action: manipulation; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; }
+        body { background: #000; touch-action: manipulation; overflow: hidden; font-family: sans-serif; color: white; }
         .gold-bg { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
-        .coin-btn:active { transform: scale(0.9); }
-        #loginOverlay { position: fixed; inset: 0; background: black; z-index: 1000; display: flex; flex-direction: column; items-center; justify-content: center; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .rank-card { background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0) 100%); border-left: 4px solid #ffd700; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
         .floating-text { position: absolute; font-weight: bold; font-size: 30px; color: #ffd700; pointer-events: none; animation: floatUp 0.7s forwards; }
     </style>
 </head>
 <body class="flex flex-col h-screen">
 
-    <div id="loginOverlay">
-        <h1 class="text-4xl font-black text-yellow-500 mb-10 italic uppercase tracking-tighter text-center">Master Ji<br>Empire</h1>
-        <input type="text" id="nameInp" placeholder="अपना नाम लिखें..." class="bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl w-72 outline-none mb-6">
-        <button onclick="login()" class="gold-bg text-black font-black py-4 px-12 rounded-2xl text-xl uppercase tracking-widest shadow-lg">Enter 👑</button>
+    <div id="loginOverlay" class="fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center">
+        <h1 class="text-4xl font-black text-yellow-500 mb-10 italic uppercase text-center">Master Ji Empire</h1>
+        <input type="text" id="nameInp" placeholder="अपना नाम लिखें..." class="bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl w-72 outline-none mb-6 shadow-2xl">
+        <button onclick="login()" class="gold-bg text-black font-black py-4 px-12 rounded-2xl text-xl uppercase shadow-lg active:scale-95 transition-all">Enter 👑</button>
     </div>
 
     <div class="p-4 flex justify-between items-center glass border-b border-yellow-900/30">
         <div class="flex items-center gap-2">
-            <div class="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center font-bold text-black border-2 border-yellow-400" id="avatar">A</div>
+            <div class="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center font-bold text-black border-2 border-yellow-400 shadow-lg" id="avatar">A</div>
             <div>
                 <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest" id="uName">User</p>
                 <p class="text-[10px] text-yellow-500 font-black italic" id="rankDisplay">Bronze Miner</p>
             </div>
         </div>
         <div class="text-right">
-            <p class="text-[9px] text-gray-400 uppercase">Profit per hour</p>
+            <p class="text-[9px] text-gray-400 uppercase tracking-tighter">Profit per hour</p>
             <p class="text-xs font-bold text-green-400">+<span id="pph">0</span> 💰</p>
         </div>
     </div>
 
-    <div class="flex flex-col items-center py-6">
-        <div class="flex items-center gap-3 bg-gray-900/50 px-6 py-2 rounded-full border border-yellow-600/20 mb-2">
-            <span class="text-3xl">💰</span>
-            <span class="text-4xl font-black text-yellow-400" id="bal">0</span>
+    <div class="flex flex-col items-center py-4 bg-gradient-to-b from-black to-transparent">
+        <div class="flex items-center gap-3 bg-gray-900/50 px-6 py-2 rounded-full border border-yellow-600/20 mb-2 shadow-inner">
+            <span class="text-2xl">💰</span>
+            <span class="text-4xl font-black text-yellow-400 tracking-tight" id="bal">0</span>
         </div>
         <div class="w-64 h-1.5 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
-            <div class="bg-blue-500 h-full transition-all duration-500" id="lvlBar" style="width: 0%"></div>
+            <div class="bg-blue-500 h-full transition-all duration-500 shadow-[0_0_10px_#3b82f6]" id="lvlBar" style="width: 0%"></div>
         </div>
     </div>
 
-    <div class="flex-grow overflow-y-auto px-4">
-        <div id="exchange" class="tab-content active h-full flex flex-col items-center justify-center pb-20">
-            <div id="tapBtn" class="w-72 h-72 rounded-full bg-gradient-to-b from-gray-800 to-black border-[12px] border-yellow-700/30 flex items-center justify-center text-[180px] shadow-[0_0_100px_rgba(255,215,0,0.1)] coin-btn cursor-pointer">🪙</div>
+    <div class="flex-grow overflow-y-auto px-4 pb-24">
+        
+        <div id="exchange" class="tab-content active h-full flex items-center justify-center">
+            <div id="tapBtn" class="w-72 h-72 rounded-full bg-gradient-to-b from-gray-800 to-black border-[10px] border-yellow-700/30 flex items-center justify-center text-[160px] shadow-[0_0_100px_rgba(255,215,0,0.1)] active:scale-90 transition-transform cursor-pointer">🪙</div>
         </div>
 
-        <div id="mine" class="tab-content">
-            <div class="grid grid-cols-2 gap-4 pb-24">
-                <div onclick="buyCard('Mining Rig', 500, 100)" class="glass p-4 rounded-2xl border-b-4 border-yellow-600">
-                    <p class="text-2xl mb-2">⛏️</p>
-                    <p class="font-bold text-sm">Mining Rig</p>
-                    <p class="text-[10px] text-green-400">+100/hr</p>
-                    <p class="text-xs mt-2 text-yellow-500 font-bold">500 💰</p>
+        <div id="leaderboard" class="tab-content pt-4">
+            <h2 class="text-2xl font-black text-yellow-500 mb-6 italic uppercase tracking-widest text-center">Top Emperors 🏆</h2>
+            <div class="space-y-3">
+                <div class="rank-card p-4 rounded-xl flex justify-between items-center border border-yellow-500/20">
+                    <span class="text-2xl">🥇</span>
+                    <span class="font-bold flex-grow ml-4 text-yellow-400" id="rank1Name">Asif Khan Multani</span>
+                    <span class="font-black" id="rank1Score">100M+</span>
                 </div>
-                <div onclick="buyCard('Gold Mine', 2000, 500)" class="glass p-4 rounded-2xl border-b-4 border-yellow-600">
-                    <p class="text-2xl mb-2">🏢</p>
-                    <p class="font-bold text-sm">Gold Mine</p>
-                    <p class="text-[10px] text-green-400">+500/hr</p>
-                    <p class="text-xs mt-2 text-yellow-500 font-bold">2,000 💰</p>
+                <div class="glass p-4 rounded-xl flex justify-between items-center border border-gray-700">
+                    <span class="text-2xl">🥈</span>
+                    <span class="font-bold flex-grow ml-4">Aman Khan</span>
+                    <span class="font-bold text-gray-300">25,450,000</span>
+                </div>
+                <div class="glass p-4 rounded-xl flex justify-between items-center border border-gray-700">
+                    <span class="text-2xl">🥉</span>
+                    <span class="font-bold flex-grow ml-4">Deepak Dayle</span>
+                    <span class="font-bold text-gray-300">12,100,000</span>
                 </div>
             </div>
+            <p class="text-center text-[10px] text-gray-500 mt-10 uppercase tracking-widest italic">आपका साम्राज्य, आपके नियम! 👑</p>
         </div>
+
     </div>
 
-    <div class="fixed bottom-4 left-4 right-4 h-16 glass rounded-2xl flex items-center justify-around z-50 border border-yellow-600/20">
-        <div onclick="showTab('exchange')" class="flex flex-col items-center opacity-100" id="t1"><span class="text-xl">🏠</span><span class="text-[10px]">Home</span></div>
-        <div onclick="showTab('mine')" class="flex flex-col items-center opacity-50" id="t2"><span class="text-xl">⚒️</span><span class="text-[10px]">Mine</span></div>
-        <div onclick="alert('Daily Rewards: Coming Soon!')" class="flex flex-col items-center opacity-50"><span class="text-xl">🎁</span><span class="text-[10px]">Daily</span></div>
-    </div>
-
-    <div class="fixed bottom-24 left-6 flex items-center gap-2">
-        <span class="text-xl">⚡</span>
-        <span class="font-bold" id="en">1000</span><span class="text-gray-500 text-xs">/ 1000</span>
+    <div class="fixed bottom-6 left-6 right-6 h-16 glass rounded-2xl flex items-center justify-around z-50 border border-yellow-600/30 shadow-2xl">
+        <div onclick="showTab('exchange')" class="flex flex-col items-center opacity-100" id="t1"><span class="text-xl">🏠</span><span class="text-[10px] font-bold">HOME</span></div>
+        <div onclick="showTab('leaderboard')" class="flex flex-col items-center opacity-50" id="t2"><span class="text-xl">🏆</span><span class="text-[10px] font-bold">RANK</span></div>
+        <div onclick="alert('Mine Section: Coming Soon!')" class="flex flex-col items-center opacity-50"><span class="text-xl">⚒️</span><span class="text-[10px] font-bold">MINE</span></div>
     </div>
 
     <script>
@@ -93,8 +94,10 @@
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('uName').innerText = n.toUpperCase();
             document.getElementById('avatar').innerText = n[0].toUpperCase();
-            if (n === adminName) { balance = 100000000; pph = 50000; tapVal = 1000; } 
-            else { balance = parseInt(localStorage.getItem('mjc_b_'+n)) || 0; }
+            if (n === adminName) { 
+                balance = 100000000; pph = 50000; tapVal = 1000;
+                document.getElementById('rank1Name').innerText = "Asif Khan Multani (YOU)";
+            } else { balance = 0; }
             update();
         }
 
@@ -102,46 +105,33 @@
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.getElementById('t1').style.opacity = id === 'exchange' ? '1' : '0.5';
-            document.getElementById('t2').style.opacity = id === 'mine' ? '1' : '0.5';
-        }
-
-        function buyCard(name, cost, p) {
-            if (balance >= cost) {
-                balance -= cost; pph += p; update(); alert(name + " Purchased!");
-            } else { alert("Sikke kam hain!"); }
+            document.getElementById('t2').style.opacity = id === 'leaderboard' ? '1' : '0.5';
         }
 
         function update() {
             document.getElementById('bal').innerText = balance.toLocaleString();
-            document.getElementById('en').innerText = energy;
             document.getElementById('pph').innerText = pph.toLocaleString();
-            let prog = (balance % 10000) / 100;
-            document.getElementById('lvlBar').style.width = prog + "%";
             let r = "Bronze Miner";
-            if (balance > 1000000) r = "MJC Emperor 👑";
-            else if (balance > 100000) r = "Platinum King";
+            if (balance >= 1000000) r = "MJC Emperor 👑";
             document.getElementById('rankDisplay').innerText = r;
+            document.getElementById('lvlBar').style.width = (balance % 10000 / 100) + "%";
+            if(document.getElementById('uName').innerText === "ASIF KHAN MULTANI") {
+                document.getElementById('rank1Score').innerText = balance.toLocaleString();
+            }
         }
 
         document.getElementById('tapBtn').addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if (energy >= tapVal) {
-                balance += tapVal; energy -= tapVal;
-                let t = e.touches[0];
-                let f = document.createElement('div');
-                f.className = 'floating-text'; f.innerText = "+" + tapVal;
-                f.style.left = t.pageX + 'px'; f.style.top = t.pageY + 'px';
-                document.body.appendChild(f); setTimeout(() => f.remove(), 700);
-                update();
-            }
+            balance += tapVal;
+            let t = e.touches[0];
+            let f = document.createElement('div');
+            f.className = 'floating-text'; f.innerText = "+" + tapVal;
+            f.style.left = t.pageX + 'px'; f.style.top = t.pageY + 'px';
+            document.body.appendChild(f); setTimeout(() => f.remove(), 700);
+            update();
         });
 
-        // Passive Income (Per Second)
-        setInterval(() => {
-            balance += Math.floor(pph / 3600);
-            if (energy < 1000) energy += 3;
-            update();
-        }, 1000);
+        setInterval(() => { balance += Math.floor(pph / 3600); update(); }, 1000);
     </script>
 </body>
 </html>
