@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>$MJC - Master Ji Empire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: radial-gradient(circle, #1a1a1a 0%, #000 100%); touch-action: manipulation; overflow: hidden; }
+        .gold-glow { box-shadow: 0 0 50px rgba(255, 215, 0, 0.2); }
+        .coin-tap:active { transform: scale(0.92); }
+        .floating-text {
+            position: absolute; color: #ffd700; font-weight: bold; font-size: 24px;
+            pointer-events: none; animation: floatUp 1s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-between h-screen pb-10 text-white select-none">
+    <div class="w-full p-6 text-center">
+        <h1 class="text-2xl font-bold tracking-widest text-yellow-500 uppercase">Master Ji Empire</h1>
+        <div class="flex items-center justify-center mt-4">
+            <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" class="w-10 h-10 mr-3">
+            <span id="balance" class="text-5xl font-black">0</span>
+        </div>
+        <p class="text-gray-400 mt-2 text-sm">Level: <span id="level" class="text-yellow-200">Bronze Miner</span></p>
+    </div>
+    <div class="relative">
+        <img id="coinBtn" src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" 
+             class="w-64 h-64 cursor-pointer transition-transform duration-75 coin-tap gold-glow rounded-full">
+    </div>
+    <div class="w-full px-8">
+        <div class="flex justify-between mb-2 font-bold">
+            <span>⚡ <span id="energy">1000</span> / 1000</span>
+        </div>
+        <div class="w-full bg-gray-800 h-4 rounded-full overflow-hidden border border-gray-700">
+            <div id="energyBar" class="bg-gradient-to-r from-yellow-600 to-yellow-300 h-full w-full transition-all duration-300"></div>
+        </div>
+    </div>
+    <script>
+        let balance = parseInt(localStorage.getItem('mjc_bal')) || 0;
+        let energy = parseInt(localStorage.getItem('mjc_energy')) || 1000;
+        const maxEnergy = 1000;
+        const balEl = document.getElementById('balance');
+        const energyEl = document.getElementById('energy');
+        const energyBar = document.getElementById('energyBar');
+        const coinBtn = document.getElementById('coinBtn');
+        function updateUI() {
+            balEl.innerText = balance.toLocaleString();
+            energyEl.innerText = energy;
+            energyBar.style.width = (energy / maxEnergy * 100) + '%';
+        }
+        coinBtn.addEventListener('touchstart', (e) => {
+            if (energy > 0) {
+                balance += 1; energy -= 1;
+                const touch = e.touches[0];
+                const text = document.createElement('div');
+                text.innerText = '+1';
+                text.className = 'floating-text';
+                text.style.left = touch.pageX + 'px';
+                text.style.top = touch.pageY + 'px';
+                document.body.appendChild(text);
+                setTimeout(() => text.remove(), 1000);
+                updateUI(); saveData();
+            }
+        });
+        function saveData() {
+            localStorage.setItem('mjc_bal', balance);
+            localStorage.setItem('mjc_energy', energy);
+        }
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy += 1; updateUI(); saveData();
+            }
+        }, 2000);
+        updateUI();
+    </script>
+</body>
+</html>
