@@ -65,12 +65,22 @@
         const balEl = document.getElementById('balance');
         const energyEl = document.getElementById('energy');
         const energyBar = document.getElementById('energyBar');
+        const levelEl = document.getElementById('level');
         const coinBtn = document.getElementById('coinBtn');
+
+        function checkRank() {
+            if (balance > 500000) levelEl.innerText = "MJC Emperor 👑";
+            else if (balance > 100000) levelEl.innerText = "Platinum King";
+            else if (balance > 25000) levelEl.innerText = "Gold Miner";
+            else if (balance > 5000) levelEl.innerText = "Silver Miner";
+            else levelEl.innerText = "Bronze Miner";
+        }
 
         function updateUI() {
             balEl.innerText = balance.toLocaleString();
             energyEl.innerText = energy;
             energyBar.style.width = (energy / maxEnergy * 100) + '%';
+            checkRank();
         }
 
         coinBtn.addEventListener('touchstart', (e) => {
@@ -98,20 +108,16 @@
         }
 
         function applyBoost() {
-            if (balance >= 100) {
-                balance -= 100; // बूस्ट की कीमत
-                tapValue = 2; // अब एक टैप पर 2 सिक्के मिलेंगे
-                energy = maxEnergy; // एनर्जी फुल
+            if (balance >= 500) {
+                balance -= 500;
+                tapValue = 2; 
+                energy = maxEnergy;
                 alert("Boost Activated! Multi-tap +2 & Energy Refilled! 🚀");
                 updateUI();
                 saveData();
-                
-                // 30 सेकंड बाद बूस्ट खत्म (वापस +1 पर)
-                setTimeout(() => {
-                    tapValue = 1;
-                }, 30000);
+                setTimeout(() => { tapValue = 1; }, 60000); // 1 मिनट का बूस्ट
             } else {
-                alert("You need at least 100 coins for a Boost! 💰");
+                alert("You need 500 coins for a Boost! 💰");
             }
         }
 
