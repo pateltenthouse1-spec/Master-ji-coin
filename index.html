@@ -7,12 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: radial-gradient(circle, #1a1a1a 0%, #000 100%); touch-action: manipulation; overflow: hidden; }
-        .gold-glow { box-shadow: 0 0 60px rgba(255, 215, 0, 0.3); }
+        .gold-glow { box-shadow: 0 0 60px rgba(255, 215, 0, 0.4); }
         .coin-tap:active { transform: scale(0.90); }
         .floating-text {
-            position: absolute; color: #ffd700; font-weight: bold; font-size: 28px;
+            position: absolute; color: #ffd700; font-weight: bold; font-size: 32px;
             pointer-events: none; animation: floatUp 0.8s ease-out forwards;
-            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+            text-shadow: 0 0 10px rgba(255,215,0,0.8);
         }
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0); }
@@ -23,27 +23,27 @@
 <body class="flex flex-col items-center justify-between h-screen pb-10 text-white select-none">
 
     <div class="w-full p-6 text-center">
-        <h1 class="text-3xl font-black tracking-widest text-yellow-500 uppercase italic">Master Ji Empire</h1>
-        <div class="flex items-center justify-center mt-6 bg-gray-900/50 py-2 rounded-full border border-yellow-900/30 mx-10">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Coin.png" class="w-10 h-10 mr-3">
+        <h1 class="text-3xl font-black tracking-widest text-yellow-500 uppercase italic drop-shadow-lg">Master Ji Empire</h1>
+        <div class="flex items-center justify-center mt-6 bg-yellow-900/20 py-2 rounded-full border border-yellow-600/30 mx-10 shadow-lg">
+            <img src="https://www.gstatic.com/images/branding/product/2x/gold_64dp.png" class="w-10 h-10 mr-3">
             <span id="balance" class="text-5xl font-black text-yellow-400">0</span>
         </div>
-        <p class="text-gray-400 mt-3 text-sm tracking-widest">RANK: <span id="level" class="text-yellow-200 font-bold uppercase">Bronze Miner</span></p>
+        <p class="text-gray-400 mt-3 text-xs tracking-[0.3em] font-bold">RANK: <span id="level" class="text-yellow-200">BRONZE MINER</span></p>
     </div>
 
     <div class="relative">
-        <div class="absolute inset-0 bg-yellow-500/10 rounded-full blur-3xl"></div>
-        <img id="coinBtn" src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Coin.png" 
-             class="w-72 h-72 cursor-pointer transition-transform duration-75 coin-tap gold-glow rounded-full border-4 border-yellow-600/20 relative z-10">
+        <div class="absolute inset-0 bg-yellow-500/20 rounded-full blur-3xl"></div>
+        <img id="coinBtn" src="https://www.gstatic.com/images/branding/product/2x/gold_64dp.png" 
+             class="w-72 h-72 cursor-pointer transition-transform duration-75 coin-tap gold-glow rounded-full border-8 border-yellow-700/20 relative z-10 p-4">
     </div>
 
     <div class="w-full px-10 mb-6">
-        <div class="flex justify-between mb-3 font-bold text-yellow-500/80 tracking-tighter text-sm">
-            <span class="flex items-center">⚡ <span id="energy" class="ml-1">1000</span> / 1000</span>
-            <span class="animate-pulse tracking-widest">MASTER JI 👑</span>
+        <div class="flex justify-between mb-3 font-black text-yellow-500 text-sm tracking-tighter">
+            <span class="flex items-center drop-shadow">⚡ <span id="energy" class="ml-1">1000</span> / 1000</span>
+            <span class="animate-pulse tracking-[0.2em]">MASTER JI 👑</span>
         </div>
-        <div class="w-full bg-gray-900 h-5 rounded-full overflow-hidden border-2 border-gray-800 shadow-inner">
-            <div id="energyBar" class="bg-gradient-to-r from-yellow-700 via-yellow-400 to-yellow-700 h-full w-full transition-all duration-300"></div>
+        <div class="w-full bg-black h-5 rounded-full overflow-hidden border-2 border-yellow-900/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]">
+            <div id="energyBar" class="bg-gradient-to-r from-yellow-800 via-yellow-400 to-yellow-800 h-full w-full transition-all duration-300"></div>
         </div>
     </div>
 
@@ -77,3 +77,27 @@
                 text.style.top = touch.pageY + 'px';
                 document.body.appendChild(text);
                 setTimeout(() => text.remove(), 800);
+
+                updateUI();
+                saveData();
+            }
+        });
+
+        function saveData() {
+            localStorage.setItem('mjc_bal', balance);
+            localStorage.setItem('mjc_energy', energy);
+        }
+
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy += 2;
+                if(energy > maxEnergy) energy = maxEnergy;
+                updateUI();
+                saveData();
+            }
+        }, 1500);
+
+        updateUI();
+    </script>
+</body>
+</html>
