@@ -1,140 +1,147 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>$MJC - Master Ji Empire</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; touch-action: manipulation; overflow: hidden; font-family: sans-serif; }
-        #loginOverlay, #comboOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; items-center; justify-content: center; padding: 20px; }
-        .gold-btn { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
-        .card-btn { background: #1a1a1a; border: 2px solid #333; height: 80px; width: 80px; display: flex; align-items: center; justify-content: center; border-radius: 15px; font-size: 30px; cursor: pointer; }
-        .card-btn.selected { border-color: #ffd700; background: #2a2200; }
-        .floating-text { position: absolute; color: #ffd700; font-weight: bold; font-size: 32px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
+        body { background: #000; touch-action: manipulation; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; }
+        .gold-bg { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
+        .coin-btn:active { transform: scale(0.9); }
+        #loginOverlay { position: fixed; inset: 0; background: black; z-index: 1000; display: flex; flex-direction: column; items-center; justify-content: center; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
+        .floating-text { position: absolute; font-weight: bold; font-size: 30px; color: #ffd700; pointer-events: none; animation: floatUp 0.7s forwards; }
     </style>
 </head>
-<body class="flex flex-col items-center justify-between h-screen pb-6 text-white select-none">
+<body class="flex flex-col h-screen">
 
     <div id="loginOverlay">
-        <h2 class="text-4xl font-black text-yellow-500 mb-10 italic text-center uppercase">Master Ji Empire</h2>
-        <input type="text" id="userNameInput" placeholder="नाम लिखिए..." class="w-full max-w-xs bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-5 text-center text-yellow-400 text-2xl outline-none mb-6">
-        <div onclick="startGame()" class="gold-btn w-full max-w-xs py-5 rounded-2xl font-black text-black text-2xl uppercase text-center cursor-pointer">ENTER EMPIRE 👑</div>
+        <h1 class="text-4xl font-black text-yellow-500 mb-10 italic uppercase tracking-tighter text-center">Master Ji<br>Empire</h1>
+        <input type="text" id="nameInp" placeholder="अपना नाम लिखें..." class="bg-gray-900 border-2 border-yellow-600 rounded-2xl px-4 py-4 text-center text-yellow-400 text-xl w-72 outline-none mb-6">
+        <button onclick="login()" class="gold-bg text-black font-black py-4 px-12 rounded-2xl text-xl uppercase tracking-widest shadow-lg">Enter 👑</button>
     </div>
 
-    <div id="comboOverlay" class="hidden">
-        <h2 class="text-3xl font-black text-yellow-500 mb-2 uppercase">Daily Combo</h2>
-        <p class="text-gray-400 text-sm mb-8 italic">सही 3 कार्ड चुनें और 5M जीतें!</p>
-        <div class="flex gap-4 mb-10">
-            <div onclick="pressCombo(1)" class="card-btn" id="c1">🃏</div>
-            <div onclick="pressCombo(2)" class="card-btn" id="c2">💎</div>
-            <div onclick="pressCombo(3)" class="card-btn" id="c3">🚀</div>
-        </div>
-        <div onclick="closeCombo()" class="text-yellow-600 font-bold border-b border-yellow-600 cursor-pointer">CLOSE</div>
-    </div>
-
-    <div id="gameUI" class="hidden w-full h-full flex flex-col items-center justify-between p-4">
-        <div class="w-full text-center">
-            <div class="flex justify-between items-center px-4">
-                <h1 class="text-xl font-black text-yellow-500 italic">MJC EMPIRE</h1>
-                <div onclick="openCombo()" class="bg-gray-800 px-4 py-2 rounded-lg border border-yellow-600 text-[10px] font-black text-yellow-400 animate-pulse cursor-pointer">🎁 DAILY COMBO</div>
+    <div class="p-4 flex justify-between items-center glass border-b border-yellow-900/30">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center font-bold text-black border-2 border-yellow-400" id="avatar">A</div>
+            <div>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest" id="uName">User</p>
+                <p class="text-[10px] text-yellow-500 font-black italic" id="rankDisplay">Bronze Miner</p>
             </div>
-            
-            <div class="mt-4 px-10">
-                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800 mt-2">
-                    <div id="levelBar" class="bg-blue-500 h-full w-0 transition-all duration-500"></div>
+        </div>
+        <div class="text-right">
+            <p class="text-[9px] text-gray-400 uppercase">Profit per hour</p>
+            <p class="text-xs font-bold text-green-400">+<span id="pph">0</span> 💰</p>
+        </div>
+    </div>
+
+    <div class="flex flex-col items-center py-6">
+        <div class="flex items-center gap-3 bg-gray-900/50 px-6 py-2 rounded-full border border-yellow-600/20 mb-2">
+            <span class="text-3xl">💰</span>
+            <span class="text-4xl font-black text-yellow-400" id="bal">0</span>
+        </div>
+        <div class="w-64 h-1.5 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+            <div class="bg-blue-500 h-full transition-all duration-500" id="lvlBar" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="flex-grow overflow-y-auto px-4">
+        <div id="exchange" class="tab-content active h-full flex flex-col items-center justify-center pb-20">
+            <div id="tapBtn" class="w-72 h-72 rounded-full bg-gradient-to-b from-gray-800 to-black border-[12px] border-yellow-700/30 flex items-center justify-center text-[180px] shadow-[0_0_100px_rgba(255,215,0,0.1)] coin-btn cursor-pointer">🪙</div>
+        </div>
+
+        <div id="mine" class="tab-content">
+            <div class="grid grid-cols-2 gap-4 pb-24">
+                <div onclick="buyCard('Mining Rig', 500, 100)" class="glass p-4 rounded-2xl border-b-4 border-yellow-600">
+                    <p class="text-2xl mb-2">⛏️</p>
+                    <p class="font-bold text-sm">Mining Rig</p>
+                    <p class="text-[10px] text-green-400">+100/hr</p>
+                    <p class="text-xs mt-2 text-yellow-500 font-bold">500 💰</p>
+                </div>
+                <div onclick="buyCard('Gold Mine', 2000, 500)" class="glass p-4 rounded-2xl border-b-4 border-yellow-600">
+                    <p class="text-2xl mb-2">🏢</p>
+                    <p class="font-bold text-sm">Gold Mine</p>
+                    <p class="text-[10px] text-green-400">+500/hr</p>
+                    <p class="text-xs mt-2 text-yellow-500 font-bold">2,000 💰</p>
                 </div>
             </div>
-
-            <div class="flex items-center justify-center mt-6 bg-yellow-900/20 py-3 rounded-full border border-yellow-600/30 mx-6 shadow-xl">
-                <span class="text-3xl mr-2">💰</span>
-                <span id="balance" class="text-4xl font-black text-yellow-400">0</span>
-            </div>
-            <p class="text-gray-400 mt-2 text-[10px] font-bold tracking-widest uppercase"><span id="uNameDisplay">User</span> | <span id="rankName">Miner</span></p>
         </div>
+    </div>
 
-        <div id="coinBtn" class="w-72 h-72 flex items-center justify-center cursor-pointer transition-transform duration-75 active:scale-90 rounded-full bg-black/40 text-[160px] border-8 border-yellow-700/20 shadow-[0_0_80px_rgba(255,215,0,0.1)]">🪙</div>
+    <div class="fixed bottom-4 left-4 right-4 h-16 glass rounded-2xl flex items-center justify-around z-50 border border-yellow-600/20">
+        <div onclick="showTab('exchange')" class="flex flex-col items-center opacity-100" id="t1"><span class="text-xl">🏠</span><span class="text-[10px]">Home</span></div>
+        <div onclick="showTab('mine')" class="flex flex-col items-center opacity-50" id="t2"><span class="text-xl">⚒️</span><span class="text-[10px]">Mine</span></div>
+        <div onclick="alert('Daily Rewards: Coming Soon!')" class="flex flex-col items-center opacity-50"><span class="text-xl">🎁</span><span class="text-[10px]">Daily</span></div>
+    </div>
 
-        <div class="w-full px-8">
-            <div class="flex justify-between text-[10px] font-black uppercase text-yellow-500 mb-1">
-                <span>⚡ Energy</span>
-                <span id="energy">1000 / 1000</span>
-            </div>
-            <div class="w-full bg-black h-3 rounded-full border border-yellow-900/50">
-                <div id="energyBar" class="bg-gradient-to-r from-yellow-700 to-yellow-400 h-full w-full"></div>
-            </div>
-        </div>
+    <div class="fixed bottom-24 left-6 flex items-center gap-2">
+        <span class="text-xl">⚡</span>
+        <span class="font-bold" id="en">1000</span><span class="text-gray-500 text-xs">/ 1000</span>
     </div>
 
     <script>
-        let balance = 0; let energy = 1000; let tapValue = 1; const maxEnergy = 1000;
-        let comboInput = []; const secretCombo = [1, 2, 3];
-        const adminNames = ["asif khan multani", "aasif khan multani"];
+        let balance = 0; let energy = 1000; let pph = 0; let tapVal = 1;
+        const adminName = "asif khan multani";
 
-        function startGame() {
-            let name = document.getElementById('userNameInput').value.trim().toLowerCase();
-            if (!name) return;
+        function login() {
+            let n = document.getElementById('nameInp').value.trim().toLowerCase();
+            if (!n) return;
             document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('gameUI').classList.remove('hidden');
-            document.getElementById('uNameDisplay').innerText = name.toUpperCase();
-            if (adminNames.includes(name)) { balance = 100000000; tapValue = 1000; }
-            else { balance = parseInt(localStorage.getItem('mjc_bal_' + name)) || 0; }
-            updateUI();
+            document.getElementById('uName').innerText = n.toUpperCase();
+            document.getElementById('avatar').innerText = n[0].toUpperCase();
+            if (n === adminName) { balance = 100000000; pph = 50000; tapVal = 1000; } 
+            else { balance = parseInt(localStorage.getItem('mjc_b_'+n)) || 0; }
+            update();
         }
 
-        function openCombo() { document.getElementById('comboOverlay').classList.remove('hidden'); }
-        function closeCombo() { document.getElementById('comboOverlay').classList.add('hidden'); comboInput = []; }
-
-        function pressCombo(id) {
-            comboInput.push(id);
-            document.getElementById('c' + id).classList.add('selected');
-            if (comboInput.length === 3) {
-                if (JSON.stringify(comboInput) === JSON.stringify(secretCombo)) {
-                    balance += 5000000;
-                    alert("WAH MASTER JI! 5,000,000 सिक्के आपके हुए! 🎉");
-                    updateUI(); saveData();
-                } else { alert("गलत कॉम्बो! कल फिर कोशिश करें।"); }
-                closeCombo();
-            }
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('t1').style.opacity = id === 'exchange' ? '1' : '0.5';
+            document.getElementById('t2').style.opacity = id === 'mine' ? '1' : '0.5';
         }
 
-        function updateProgress() {
-            let p = 0; let r = "Bronze Miner"; let l = "1/5";
-            if (balance >= 500000) { r = "MJC Emperor 👑"; p = 100; l = "5/5"; }
-            else if (balance >= 100000) { r = "Platinum King"; p = ((balance-100000)/400000)*100; l = "4/5"; }
-            else { p = (balance / 5000) * 100; }
-            document.getElementById('rankName').innerText = r;
-            document.getElementById('levelBar').style.width = `${p}%`;
+        function buyCard(name, cost, p) {
+            if (balance >= cost) {
+                balance -= cost; pph += p; update(); alert(name + " Purchased!");
+            } else { alert("Sikke kam hain!"); }
         }
 
-        function updateUI() {
-            document.getElementById('balance').innerText = balance.toLocaleString();
-            document.getElementById('energy').innerText = `${energy} / ${maxEnergy}`;
-            document.getElementById('energyBar').style.width = (energy / maxEnergy * 100) + '%';
-            updateProgress();
+        function update() {
+            document.getElementById('bal').innerText = balance.toLocaleString();
+            document.getElementById('en').innerText = energy;
+            document.getElementById('pph').innerText = pph.toLocaleString();
+            let prog = (balance % 10000) / 100;
+            document.getElementById('lvlBar').style.width = prog + "%";
+            let r = "Bronze Miner";
+            if (balance > 1000000) r = "MJC Emperor 👑";
+            else if (balance > 100000) r = "Platinum King";
+            document.getElementById('rankDisplay').innerText = r;
         }
 
-        document.getElementById('coinBtn').addEventListener('touchstart', (e) => {
+        document.getElementById('tapBtn').addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if (energy >= 1) {
-                balance += tapValue; energy -= 1;
+            if (energy >= tapVal) {
+                balance += tapVal; energy -= tapVal;
                 let t = e.touches[0];
                 let f = document.createElement('div');
-                f.innerText = `+${tapValue}`; f.className = 'floating-text';
+                f.className = 'floating-text'; f.innerText = "+" + tapVal;
                 f.style.left = t.pageX + 'px'; f.style.top = t.pageY + 'px';
-                document.body.appendChild(f); setTimeout(() => f.remove(), 800);
-                updateUI(); saveData();
+                document.body.appendChild(f); setTimeout(() => f.remove(), 700);
+                update();
             }
         });
 
-        function saveData() {
-            let n = document.getElementById('uNameDisplay').innerText.toLowerCase();
-            if (!adminNames.includes(n)) localStorage.setItem('mjc_bal_' + n, balance);
-        }
-
-        setInterval(() => { if (energy < maxEnergy) { energy += 5; updateUI(); } }, 1000);
-        updateUI();
+        // Passive Income (Per Second)
+        setInterval(() => {
+            balance += Math.floor(pph / 3600);
+            if (energy < 1000) energy += 3;
+            update();
+        }, 1000);
     </script>
 </body>
 </html>
