@@ -23,23 +23,23 @@
 <body class="flex flex-col items-center justify-between h-screen pb-6 text-white select-none">
 
     <div class="w-full p-4 text-center">
-        <h1 onclick="adminSecret()" class="text-2xl font-black tracking-widest text-yellow-500 uppercase italic drop-shadow-lg cursor-pointer">Master Ji Empire</h1>
+        <h1 class="text-2xl font-black tracking-widest text-yellow-500 uppercase italic drop-shadow-lg">Master Ji Empire</h1>
         
         <div class="mt-4 px-10">
             <div class="flex justify-between text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest">
-                <span id="levelText">Level 1/5</span>
-                <span id="nextRank">Next: Silver</span>
+                <span id="levelText">Level 5/5</span>
+                <span id="nextRank">Next: MAX</span>
             </div>
             <div class="w-full bg-gray-900 h-1.5 rounded-full border border-gray-800">
-                <div id="levelBar" class="bg-blue-500 h-full w-0 transition-all duration-500 shadow-[0_0_10px_#3b82f6]"></div>
+                <div id="levelBar" class="bg-blue-500 h-full w-full transition-all duration-500 shadow-[0_0_10px_#3b82f6]"></div>
             </div>
         </div>
 
         <div class="flex items-center justify-center mt-4 bg-yellow-900/20 py-2 rounded-full border border-yellow-600/30 mx-8 shadow-lg">
             <span class="text-2xl mr-2">💰</span>
-            <span id="balance" class="text-4xl font-black text-yellow-400">0</span>
+            <span id="balance" class="text-3xl font-black text-yellow-400">0</span>
         </div>
-        <p class="text-gray-400 mt-2 text-[10px] tracking-[0.2em] font-bold uppercase">Rank: <span id="rankName" class="text-yellow-200">Bronze Miner</span> <span class="text-red-500 ml-1">ADMIN 👑</span></p>
+        <p class="text-gray-400 mt-2 text-[10px] tracking-[0.2em] font-bold uppercase">Rank: <span id="rankName" class="text-yellow-200 font-bold">MJC Emperor 👑</span> <span class="text-red-500 ml-1">ADMIN 👑</span></p>
     </div>
 
     <div class="relative flex items-center justify-center">
@@ -49,29 +49,27 @@
         </div>
     </div>
 
-    <div class="w-full px-8">
+    <div class="w-full px-8 text-center">
         <div class="flex justify-between items-end mb-4">
             <div class="text-left">
                 <p class="text-yellow-500 font-black text-[10px] mb-1 tracking-widest">⚡ ENERGY</p>
                 <p class="text-2xl font-bold"><span id="energy">1000</span><span class="text-gray-500 text-sm">/1000</span></p>
             </div>
-            <button onclick="applyBoost()" class="bg-gradient-to-b from-yellow-400 to-yellow-700 px-6 py-2 rounded-xl font-black text-black shadow-lg active:scale-95 transition-all text-sm">
-                BOOST 🚀
-            </button>
+            <p class="text-yellow-400 font-black text-sm italic">ULTIMATE ADMIN ACCESS</p>
         </div>
         
         <div class="w-full bg-black h-4 rounded-full overflow-hidden border border-yellow-900/50">
             <div id="energyBar" class="bg-gradient-to-r from-yellow-700 via-yellow-400 to-yellow-700 h-full w-full transition-all duration-300"></div>
         </div>
         
-        <p class="text-center mt-4 text-gray-600 text-[9px] tracking-widest uppercase italic">Master Ji Official Admin Access 👑</p>
+        <p class="text-center mt-4 text-gray-600 text-[9px] tracking-widest uppercase italic">The Sovereign Leader of $MJC Empire 👑</p>
     </div>
 
     <script>
-        let balance = parseInt(localStorage.getItem('mjc_bal')) || 0;
-        let energy = parseInt(localStorage.getItem('mjc_energy')) || 1000;
-        let tapValue = 1; 
-        let adminClicks = 0;
+        // मास्टर जी के लिए डायरेक्ट 10 करोड़ पॉइंट्स की सेटिंग
+        let balance = 100000000; 
+        let energy = 1000;
+        let tapValue = 1000; // अब आपके एक टैप पर 1000 सिक्के बढ़ेंगे!
         const maxEnergy = 1000;
 
         const balEl = document.getElementById('balance');
@@ -79,61 +77,25 @@
         const energyBar = document.getElementById('energyBar');
         const rankName = document.getElementById('rankName');
         const levelText = document.getElementById('levelText');
-        const nextRank = document.getElementById('nextRank');
         const levelBar = document.getElementById('levelBar');
         const coinBtn = document.getElementById('coinBtn');
-
-        function adminSecret() {
-            adminClicks++;
-            if (adminClicks >= 5) {
-                balance += 100000;
-                alert("Master Ji, 100,000 Coins Added! 👑");
-                adminClicks = 0;
-                updateUI();
-                saveData();
-            }
-        }
-
-        function updateProgress() {
-            let progress = 0;
-            let currentRank = "Bronze Miner";
-            let next = "Silver";
-            let lvl = "1/5";
-
-            if (balance >= 500000) {
-                currentRank = "MJC Emperor 👑";
-                next = "MAX"; progress = 100; lvl = "5/5";
-            } else if (balance >= 100000) {
-                currentRank = "Platinum King";
-                next = "Emperor"; progress = ((balance - 100000) / 400000) * 100; lvl = "4/5";
-            } else if (balance >= 25000) {
-                currentRank = "Gold Miner";
-                next = "Platinum"; progress = ((balance - 25000) / 75000) * 100; lvl = "3/5";
-            } else if (balance >= 5000) {
-                currentRank = "Silver Miner";
-                next = "Gold"; progress = ((balance - 5000) / 20000) * 100; lvl = "2/5";
-            } else {
-                progress = (balance / 5000) * 100;
-            }
-
-            rankName.innerText = currentRank;
-            nextRank.innerText = `Next: ${next}`;
-            levelText.innerText = `Level ${lvl}`;
-            levelBar.style.width = `${progress}%`;
-        }
 
         function updateUI() {
             balEl.innerText = balance.toLocaleString();
             energyEl.innerText = energy;
             energyBar.style.width = (energy / maxEnergy * 100) + '%';
-            updateProgress();
+            
+            // सीधे मैक्स रैंक और लेवल
+            rankName.innerText = "MJC Emperor 👑";
+            levelText.innerText = "Level 5/5";
+            levelBar.style.width = "100%";
         }
 
         coinBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if (energy >= tapValue) {
+            if (energy >= 1) {
                 balance += tapValue;
-                energy -= tapValue;
+                energy -= 1;
                 const touch = e.touches[0];
                 showFloatingText(touch.pageX, touch.pageY, `+${tapValue}`);
                 updateUI();
@@ -151,17 +113,6 @@
             setTimeout(() => text.remove(), 800);
         }
 
-        function applyBoost() {
-            if (balance >= 500) {
-                balance -= 500;
-                tapValue = 2; 
-                energy = maxEnergy;
-                updateUI();
-                saveData();
-                setTimeout(() => { tapValue = 1; }, 60000);
-            }
-        }
-
         function saveData() {
             localStorage.setItem('mjc_bal', balance);
             localStorage.setItem('mjc_energy', energy);
@@ -169,12 +120,12 @@
 
         setInterval(() => {
             if (energy < maxEnergy) {
-                energy += 2;
+                energy += 10;
                 if(energy > maxEnergy) energy = maxEnergy;
                 updateUI();
                 saveData();
             }
-        }, 1500);
+        }, 1000);
 
         updateUI();
     </script>
