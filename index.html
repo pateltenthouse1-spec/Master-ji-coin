@@ -9,125 +9,118 @@
         body { background: radial-gradient(circle, #1a1a1a 0%, #000 100%); touch-action: manipulation; overflow: hidden; font-family: sans-serif; }
         .gold-glow { box-shadow: 0 0 80px rgba(255, 215, 0, 0.2); }
         .coin-tap:active { transform: scale(0.85); }
-        .floating-text {
-            position: absolute; color: #ffd700; font-weight: bold; font-size: 32px;
-            pointer-events: none; animation: floatUp 0.8s ease-out forwards;
-            text-shadow: 0 0 10px rgba(255,215,0,0.8);
-        }
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-120px); }
-        }
+        .floating-text { position: absolute; color: #ffd700; font-weight: bold; font-size: 32px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; text-shadow: 0 0 10px rgba(255,215,0,0.8); }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
+        #loginOverlay { position: fixed; inset: 0; background: black; z-index: 100; display: flex; flex-col items-center justify-center; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-between h-screen pb-6 text-white select-none">
 
-    <div class="w-full p-4 text-center">
-        <h1 class="text-2xl font-black tracking-widest text-yellow-500 uppercase italic drop-shadow-lg">Master Ji Empire</h1>
-        
-        <div class="mt-4 px-10">
-            <div class="flex justify-between text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest">
-                <span id="levelText">Level 5/5</span>
-                <span id="nextRank">Next: MAX</span>
-            </div>
-            <div class="w-full bg-gray-900 h-1.5 rounded-full border border-gray-800">
-                <div id="levelBar" class="bg-blue-500 h-full w-full transition-all duration-500 shadow-[0_0_10px_#3b82f6]"></div>
-            </div>
-        </div>
-
-        <div class="flex items-center justify-center mt-4 bg-yellow-900/20 py-2 rounded-full border border-yellow-600/30 mx-8 shadow-lg">
-            <span class="text-2xl mr-2">💰</span>
-            <span id="balance" class="text-3xl font-black text-yellow-400">0</span>
-        </div>
-        <p class="text-gray-400 mt-2 text-[10px] tracking-[0.2em] font-bold uppercase">Rank: <span id="rankName" class="text-yellow-200 font-bold">MJC Emperor 👑</span> <span class="text-red-500 ml-1">ADMIN 👑</span></p>
+    <div id="loginOverlay">
+        <h2 class="text-2xl font-black text-yellow-500 mb-6 italic tracking-widest">ENTER EMPIRE</h2>
+        <input type="text" id="userNameInput" placeholder="Enter Your Name..." class="bg-gray-900 border-2 border-yellow-700 rounded-xl px-4 py-3 text-center text-yellow-400 outline-none mb-4 w-64">
+        <button onclick="startGame()" class="bg-yellow-600 px-10 py-3 rounded-xl font-black text-black uppercase tracking-widest">Login</button>
     </div>
 
-    <div class="relative flex items-center justify-center">
-        <div class="absolute w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl"></div>
-        <div id="coinBtn" class="w-64 h-64 flex items-center justify-center cursor-pointer transition-transform duration-75 coin-tap gold-glow rounded-full border-8 border-yellow-700/20 relative z-10 bg-black/40 text-[150px]">
-            🪙
-        </div>
-    </div>
-
-    <div class="w-full px-8 text-center">
-        <div class="flex justify-between items-end mb-4">
-            <div class="text-left">
-                <p class="text-yellow-500 font-black text-[10px] mb-1 tracking-widest">⚡ ENERGY</p>
-                <p class="text-2xl font-bold"><span id="energy">1000</span><span class="text-gray-500 text-sm">/1000</span></p>
+    <div id="gameUI" class="hidden w-full h-full flex flex-col items-center justify-between">
+        <div class="w-full p-4 text-center">
+            <h1 class="text-2xl font-black tracking-widest text-yellow-500 uppercase italic drop-shadow-lg">Master Ji Empire</h1>
+            <div class="mt-4 px-10">
+                <div class="flex justify-between text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest">
+                    <span id="levelText">Level 1/5</span>
+                    <span id="nextRank">Next: Silver</span>
+                </div>
+                <div class="w-full bg-gray-900 h-1.5 rounded-full border border-gray-800">
+                    <div id="levelBar" class="bg-blue-500 h-full w-0 transition-all duration-500"></div>
+                </div>
             </div>
-            <p class="text-yellow-400 font-black text-sm italic">ULTIMATE ADMIN ACCESS</p>
+            <div class="flex items-center justify-center mt-4 bg-yellow-900/20 py-2 rounded-full border border-yellow-600/30 mx-8 shadow-lg">
+                <span class="text-2xl mr-2">💰</span>
+                <span id="balance" class="text-3xl font-black text-yellow-400">0</span>
+            </div>
+            <p class="text-gray-400 mt-2 text-[10px] font-bold uppercase tracking-widest"><span id="uNameDisplay">User</span> | <span id="rankName" class="text-yellow-200">Miner</span></p>
         </div>
-        
-        <div class="w-full bg-black h-4 rounded-full overflow-hidden border border-yellow-900/50">
-            <div id="energyBar" class="bg-gradient-to-r from-yellow-700 via-yellow-400 to-yellow-700 h-full w-full transition-all duration-300"></div>
+
+        <div id="coinBtn" class="w-64 h-64 flex items-center justify-center cursor-pointer transition-transform duration-75 coin-tap gold-glow rounded-full border-8 border-yellow-700/20 bg-black/40 text-[150px]">🪙</div>
+
+        <div class="w-full px-8 pb-4">
+            <div class="flex justify-between items-end mb-4 font-black">
+                <div class="text-left">
+                    <p class="text-yellow-500 text-[10px] mb-1 uppercase">⚡ Energy</p>
+                    <p class="text-2xl"><span id="energy">1000</span><span class="text-gray-500 text-sm">/1000</span></p>
+                </div>
+                <span class="text-yellow-400 italic text-xs">OFFICIAL MJC 👑</span>
+            </div>
+            <div class="w-full bg-black h-4 rounded-full overflow-hidden border border-yellow-900/50">
+                <div id="energyBar" class="bg-gradient-to-r from-yellow-700 to-yellow-400 h-full w-full"></div>
+            </div>
         </div>
-        
-        <p class="text-center mt-4 text-gray-600 text-[9px] tracking-widest uppercase italic">The Sovereign Leader of $MJC Empire 👑</p>
     </div>
 
     <script>
-        // मास्टर जी के लिए डायरेक्ट 10 करोड़ पॉइंट्स की सेटिंग
-        let balance = 100000000; 
-        let energy = 1000;
-        let tapValue = 1000; // अब आपके एक टैप पर 1000 सिक्के बढ़ेंगे!
-        const maxEnergy = 1000;
+        let balance = 0; let energy = 1000; let tapValue = 1; const maxEnergy = 1000;
+        const adminName = "Asif Khan Multani"; // यहाँ आप अपना नाम बदल भी सकते हैं
 
-        const balEl = document.getElementById('balance');
-        const energyEl = document.getElementById('energy');
-        const energyBar = document.getElementById('energyBar');
-        const rankName = document.getElementById('rankName');
-        const levelText = document.getElementById('levelText');
-        const levelBar = document.getElementById('levelBar');
-        const coinBtn = document.getElementById('coinBtn');
+        function startGame() {
+            let nameInput = document.getElementById('userNameInput').value.trim();
+            if (!nameInput) { alert("Please enter a name!"); return; }
 
-        function updateUI() {
-            balEl.innerText = balance.toLocaleString();
-            energyEl.innerText = energy;
-            energyBar.style.width = (energy / maxEnergy * 100) + '%';
-            
-            // सीधे मैक्स रैंक और लेवल
-            rankName.innerText = "MJC Emperor 👑";
-            levelText.innerText = "Level 5/5";
-            levelBar.style.width = "100%";
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('gameUI').classList.remove('hidden');
+            document.getElementById('uNameDisplay').innerText = nameInput;
+
+            // Admin Logic
+            if (nameInput === adminName) {
+                balance = 100000000; tapValue = 1000;
+                alert("Welcome, Emperor Asif! Your empire awaits. 👑");
+            } else {
+                balance = parseInt(localStorage.getItem('mjc_bal_' + nameInput)) || 0;
+                tapValue = 1;
+            }
+            updateUI();
         }
 
-        coinBtn.addEventListener('touchstart', (e) => {
+        function updateProgress() {
+            let progress = 0; let currentRank = "Bronze Miner"; let lvl = "1/5";
+            if (balance >= 500000) { currentRank = "MJC Emperor 👑"; progress = 100; lvl = "5/5"; }
+            else if (balance >= 100000) { currentRank = "Platinum King"; progress = ((balance-100000)/400000)*100; lvl = "4/5"; }
+            else if (balance >= 25000) { currentRank = "Gold Miner"; progress = ((balance-25000)/75000)*100; lvl = "3/5"; }
+            else if (balance >= 5000) { currentRank = "Silver Miner"; progress = ((balance-5000)/20000)*100; lvl = "2/5"; }
+            else { progress = (balance / 5000) * 100; }
+            document.getElementById('rankName').innerText = currentRank;
+            document.getElementById('levelText').innerText = `Level ${lvl}`;
+            document.getElementById('levelBar').style.width = `${progress}%`;
+        }
+
+        function updateUI() {
+            document.getElementById('balance').innerText = balance.toLocaleString();
+            document.getElementById('energy').innerText = energy;
+            document.getElementById('energyBar').style.width = (energy / maxEnergy * 100) + '%';
+            updateProgress();
+        }
+
+        document.getElementById('coinBtn').addEventListener('touchstart', (e) => {
             e.preventDefault();
             if (energy >= 1) {
-                balance += tapValue;
-                energy -= 1;
-                const touch = e.touches[0];
-                showFloatingText(touch.pageX, touch.pageY, `+${tapValue}`);
-                updateUI();
-                saveData();
+                balance += tapValue; energy -= 1;
+                showFloatingText(e.touches[0].pageX, e.touches[0].pageY, `+${tapValue}`);
+                updateUI(); saveData();
             }
         });
 
         function showFloatingText(x, y, val) {
             const text = document.createElement('div');
-            text.innerText = val;
-            text.className = 'floating-text';
-            text.style.left = x + 'px';
-            text.style.top = y + 'px';
-            document.body.appendChild(text);
-            setTimeout(() => text.remove(), 800);
+            text.innerText = val; text.className = 'floating-text';
+            text.style.left = x + 'px'; text.style.top = y + 'px';
+            document.body.appendChild(text); setTimeout(() => text.remove(), 800);
         }
 
         function saveData() {
-            localStorage.setItem('mjc_bal', balance);
-            localStorage.setItem('mjc_energy', energy);
+            let name = document.getElementById('uNameDisplay').innerText;
+            if (name !== adminName) { localStorage.setItem('mjc_bal_' + name, balance); }
         }
 
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy += 10;
-                if(energy > maxEnergy) energy = maxEnergy;
-                updateUI();
-                saveData();
-            }
-        }, 1000);
-
-        updateUI();
+        setInterval(() => { if (energy < maxEnergy) { energy += 2; updateUI(); } }, 1500);
     </script>
 </body>
 </html>
